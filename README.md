@@ -1,4 +1,4 @@
-# 리뷰 없는 신제품 화장품의 피부유형별 부정 경험 위험 선별
+# 🧴 리뷰 없는 신제품 화장품의 피부유형별 부정 경험 위험 선별🧴 
 
 > **Cold-Start Machine Learning for Skin-Type-Specific Cosmetic Risk Screening**  
 > 2026 한국데이터마이닝학회 하계학술대회 포스터 발표 · 제1저자
