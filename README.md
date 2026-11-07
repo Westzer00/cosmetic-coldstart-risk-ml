@@ -1,12 +1,21 @@
-# 🧴 리뷰 없는 신제품 화장품의 피부유형별 부정 경험 위험 선별🧴 
+# 리뷰 없는 신제품의 피부유형별 부정 경험 위험 선별
 
-> **Cold-Start Machine Learning for Skin-Type-Specific Cosmetic Risk Screening**  
+> **출시 전에 확보 가능한 정보만으로 검토 우선순위를 정하는 머신러닝 연구**  
 > 2026 한국데이터마이닝학회 하계학술대회 포스터 발표 · 제1저자
 
 리뷰가 아직 존재하지 않는 신제품에서도 **출시 전에 확보 가능한 성분·제품명·피부유형 정보만으로**
 피부유형별 부정 경험 위험이 높은 조합을 우선 선별할 수 있는지 탐색한 Cold-Start Machine Learning 프로젝트입니다.
 
 ---
+
+## 확인할 수 있는 개발·연구 역량
+
+- **문제 정의:** 리뷰가 없는 신제품에서 어떤 피부유형을 먼저 검토할지 예측 대상으로 설정
+- **데이터 설계:** 실제 출시 전에 알 수 없는 리뷰는 입력에서 제외하고, 성분·제품명·피부유형으로 변수를 직접 구성
+- **검증 방법:** 유사 처방군을 학습·시험에 겹치지 않게 나눠 과대평가 위험을 줄임
+- **결과 확인:** 독립 테스트에서 고위험 조합 65개 중 41개 탐지(재현 조건과 한계는 아래 명시)
+
+> 4인 팀의 연구 결과입니다. 성분 전처리와 입력 변수 설계, 연구 통합·제1저자 발표를 주도했고 모델 비교·검증에는 팀과 함께 참여했습니다.
 
 ## 1. 핵심 문제
 
@@ -27,7 +36,7 @@
             Product × Skin Type
               High-Risk Label
 
-신제품 Prediction Input
+신제품 예측 입력
         │
         ├── Ingredient Information
         ├── Product Name / Claim
@@ -48,7 +57,7 @@
 
 ---
 
-## 2. Dataset
+## 2. 데이터 규모
 
 최종 학회 분석 기준:
 
@@ -61,7 +70,7 @@
 | Held-out Test Observations | 255 |
 | Actual High-Risk in Test | 65 |
 
-원본 리뷰 및 전체 크롤링 데이터는 본 Repository에서 재배포하지 않습니다.
+원본 리뷰와 수집 데이터는 공개하지 않습니다.
 
 자세한 데이터 공개 원칙은 [`data/README.md`](data/README.md)를 참고해주세요.
 
@@ -78,11 +87,11 @@
 - 연구 문제정의 및 실험 구조 정리
 - 학술 포스터 전체 통합 및 제1저자
 
-> 모델링 전체를 단독 수행한 프로젝트가 아니라 팀 프로젝트이며, 본 Repository는 제가 직접 설명 가능한 전처리·Feature Engineering·검증 구조와 최종 연구 결과를 중심으로 정리합니다.
+> 모델링 전체를 단독 수행한 프로젝트가 아니라 팀 프로젝트이며, 본 저장소는 제가 직접 설명 가능한 전처리·Feature Engineering·검증 구조와 최종 연구 결과를 중심으로 정리합니다.
 
 ---
 
-## 4. 데이터 전처리
+## 4. 성분 데이터 전처리
 
 원천 전성분 데이터는 모델에 바로 사용할 수 없는 형식이 많아 별도의 정제 Pipeline을 구성했습니다.
 
@@ -90,7 +99,7 @@
 
 - `전성분 정제수` → `정제수`
 - `스쿠알란(150,000ppm)` → 성분명 / 함량 분리
-- 마침표로 연결된 전성분 문자열 분리
+- 마침표로 연결된 성분 문자열 분리
 - `사용방법`, 설명문, 마케팅 문구 제거
 - 잘못 닫힌 `[크림}` 같은 Section 표기 보정
 - 본품 / 증정품 / 다중 옵션 Section 구분
@@ -103,7 +112,7 @@
 
 ---
 
-## 5. Cold-Start Target 설계
+## 5. 출시 전 예측 대상과 정답 설계
 
 과거 리뷰는 예측 입력에 넣지 않고 **제품 × 피부유형 단위 Risk Label 생성**에만 사용했습니다.
 
@@ -126,11 +135,11 @@ HIGH-RISK LABEL
 
 ---
 
-## 6. Feature Engineering
+## 6. 입력 변수 설계
 
 단순 성분 유무 외에도 화장품 Domain 정보를 반영하도록 여러 Feature Group을 구성했습니다.
 
-### Feature Pool
+### 입력 변수 구성
 
 | Feature Group | 내용 |
 |---|---|
@@ -149,7 +158,7 @@ HIGH-RISK LABEL
 
 ---
 
-## 7. Leakage-Aware Validation
+## 7. 데이터 누수 방지와 검증
 
 같은 제품 또는 동일 처방이 Train과 Validation/Test에 동시에 포함되면 모델이 성분 구성을 사실상 암기할 수 있습니다.
 
@@ -176,11 +185,11 @@ Group Overlap = 0
 
 모델링 및 평가 흐름은 다음 파일에 정리되어 있습니다.
 
-[`notebooks/04_modeling_and_evaluation_notes.md`](notebooks/04_modeling_and_evaluation_notes.md)
+[`docs/model-evaluation.md`](docs/model-evaluation.md)
 
 ---
 
-## 8. Model Selection
+## 8. 모델 비교·선정
 
 다음 모델을 동일한 Group-CV 조건에서 비교했습니다.
 
@@ -200,9 +209,9 @@ Group Overlap = 0
 
 ---
 
-## 9. Held-out Test Result
+## 9. 독립 테스트 결과
 
-### Final Random Forest
+### 최종 Random Forest
 
 | Metric | Result |
 |---|---:|
@@ -228,7 +237,7 @@ Risk Recall      : 63.1%
 
 ---
 
-## 10. Repository 구성
+## 10. 파일 구조
 
 ```text
 .
@@ -239,9 +248,9 @@ Risk Recall      : 63.1%
 │   ├── 01_ingredient_preprocessing.ipynb
 │   ├── 02_final_feature_engineering.ipynb
 │   ├── 03_evidence_guided_interactions.ipynb
-│   └── 04_modeling_and_evaluation_notes.md
 ├── docs/
-│   └── methodology.md
+│   ├── methodology.md
+│   └── model-evaluation.md
 ├── data/
 │   └── README.md
 └── results/
@@ -261,7 +270,7 @@ Risk Recall      : 63.1%
 
 ---
 
-## 12. 해석 및 한계
+## 12. 적용 범위와 한계
 
 - 본 모델은 의료적 부작용을 진단하는 모델이 아닙니다.
 - 데이터는 크림 카테고리를 중심으로 구성되어 있습니다.
