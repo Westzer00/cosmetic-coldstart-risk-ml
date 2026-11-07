@@ -183,7 +183,7 @@ Group Overlap = 0
 
 모델링 및 평가 흐름은 다음 파일에 정리되어 있습니다.
 
-[`docs/model-evaluation.md`](docs/model-evaluation.md)
+[포스터 최종 모델링 코드](notebooks/05_poster_final_formula_group.ipynb) · [버전별 실험 차이](docs/experiment-versions.md)
 
 ---
 
@@ -246,10 +246,12 @@ Risk Recall      : 63.1%
 │   ├── 01_ingredient_preprocessing.ipynb
 │   ├── 02_final_feature_engineering.ipynb
 │   ├── 03_evidence_guided_interactions.ipynb
-│   └── 04_model_evaluation.ipynb
+│   ├── 04_model_evaluation.ipynb
+│   └── 05_poster_final_formula_group.ipynb
 ├── docs/
 │   ├── methodology.md
-│   └── model-evaluation.md
+│   ├── model-evaluation.md
+│   └── experiment-versions.md
 ├── data/
 │   └── README.md
 └── results/

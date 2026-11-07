@@ -1,23 +1,8 @@
-# 모델 비교와 평가 과정
+# 모델 비교 및 평가
 
-리뷰가 없는 신제품의 피부유형별 부정 경험 위험을 선별하기 위해, 출시 전에 확보 가능한 성분·제품명·피부유형 정보만 입력으로 사용한 모델링 실험.
+- **학술 포스터의 실제 모델링:** [05_poster_final_formula_group.ipynb](../notebooks/05_poster_final_formula_group.ipynb)
+- **이전 탐색용 모델링:** [04_model_evaluation.ipynb](../notebooks/04_model_evaluation.ipynb)
+- **학습·검증 조건과 버전 차이:** [experiment-versions.md](experiment-versions.md)
+- **최종 평가 수치:** [final_metrics.md](../results/final_metrics.md)
 
-## 데이터와 검증 기준
-
-- 리뷰 기반 부정 경험 비율은 정답(label) 생성에만 활용
-- 제품×피부유형 단위로 목표값 구성
-- 서로 다른 성분 표현(V1 전체 성분 / V2 빈도 필터 성분)을 같은 표본·Fold에서 비교
-- 유사 처방 제품군이 학습과 평가에 중복되지 않도록 Group Split 적용
-- Train 범위에서만 임계값을 결정하고, 보지 않은 Test에서 최종 평가
-
-## 모델 비교
-
-Logistic Regression, Random Forest, XGBoost, CatBoost 등을 비교하고, 그룹 교차검증·임계값 선택·Optuna 탐색을 분리하여 구성.
-
-- [모델 비교·평가 Python 노트북](../notebooks/04_model_evaluation.ipynb)
-- [실험 설계](methodology.md)
-- [최종 수치](../results/final_metrics.md)
-
-## 실행 조건
-
-노트북은 당시 Google Colab에서 진행한 모델링 코드를 정리한 자료이며, 원천 CSV 데이터는 포함하지 않았습니다. 실행 시 노트북 앞부분에서 개인 입력 데이터의 파일 경로를 설정해야 합니다. 대용량 모델 탐색과 외부 데이터 연결이 필요해 GitHub에서 즉시 실행되는 독립 데모는 아닙니다.
+포스터의 최종 방법은 제품×피부유형별 정답 생성, 성분 데이터 결합, 처방 그룹별 분리, 학습 내부 그룹 교차검증과 임계값 선정, 별도 Test 평가 순서로 구성됩니다.
