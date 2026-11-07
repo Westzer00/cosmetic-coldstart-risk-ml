@@ -245,7 +245,8 @@ Risk Recall      : 63.1%
 ├── notebooks/
 │   ├── 01_ingredient_preprocessing.ipynb
 │   ├── 02_final_feature_engineering.ipynb
-│   └── 03_evidence_guided_interactions.ipynb
+│   ├── 03_evidence_guided_interactions.ipynb
+│   └── 04_model_evaluation.ipynb
 ├── docs/
 │   ├── methodology.md
 │   └── model-evaluation.md
