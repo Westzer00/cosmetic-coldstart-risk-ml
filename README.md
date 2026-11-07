@@ -13,7 +13,7 @@
 - **문제 정의:** 리뷰가 없는 신제품에서 어떤 피부유형을 먼저 검토할지 예측 대상으로 설정
 - **데이터 설계:** 실제 출시 전에 알 수 없는 리뷰는 입력에서 제외하고, 성분·제품명·피부유형으로 변수를 직접 구성
 - **검증 방법:** 유사 처방군을 학습·시험에 겹치지 않게 나눠 과대평가 위험을 줄임
-- **평가 결과:** 독립 테스트에서 고위험 조합 65개 중 41개 탐지
+- **당시 별도 Test 결과(팀 연구):** 고위험 조합 65개 중 41개 탐지. 원본 데이터가 없는 공개 CI에서 이 성능을 재학습한 수치는 아닙니다.
 
 **담당:** 4인 팀장. 성분 전처리·입력 변수 설계·연구 통합·제1저자 발표 주도, 모델 비교·검증 참여.
 
@@ -181,6 +181,8 @@ Group Overlap = 0
 - Train 내부: **5-Fold Stratified Group Cross-Validation**
 - Threshold는 Test를 보지 않고 **Train OOF prediction만으로 선택**
 
+**분할 해석:** 당시 코드는 `GroupShuffleSplit` 후보 300개 가운데 고위험군 비율이 전체와 비슷한 분할을 선택했습니다. 처방 그룹 중복은 없지만 Test 라벨 분포를 분할 선택에 참고했다는 점에서 완전한 무작위 Hold-out과는 다릅니다. 위험군의 75% 기준과 평활화 기준도 분할 전에 전체 표본으로 정의했습니다. 후속 전향적 검증에서는 이를 Train 기준으로 고정해 다시 평가할 필요가 있습니다.
+
 모델링 및 평가 흐름은 다음 파일에 정리되어 있습니다.
 
 [포스터 최종 모델링 코드](notebooks/05_poster_final_formula_group.ipynb) · [버전별 실험 차이](docs/experiment-versions.md)
@@ -207,7 +209,7 @@ Group Overlap = 0
 
 ---
 
-## 9. 독립 테스트 결과
+## 9. 당시 별도 Test 결과
 
 ### 최종 Random Forest
 
@@ -235,13 +237,24 @@ Risk Recall      : 63.1%
 
 ---
 
-## 10. 파일 구조
+## 10. 공개 코드 검증 범위
+
+- 원본 데이터에 대한 당시 모델 학습·평가 기록과 수치: 이 README 및 [실험 버전 문서](docs/experiment-versions.md)에 정리
+- GitHub Actions: 연구 노트북의 JSON 구조·Python 구문 검사 및 **실제 최종 노트북 함수**를 추출한 합성 데이터 그룹 분할 테스트. 학습·추론 성능 재현은 아님
+- 데이터: 실제 리뷰·제품별 원자료 비공개. 공개 저장소만으로 최종 PR-AUC 0.384를 재현할 수 없음
+
+[합성 데이터 검증 테스트](tests/test_poster_validation_protocol.py) · [검증상의 제한](docs/validation-audit-20261108.md)
+
+## 11. 파일 구조
 
 ```text
 .
 ├── README.md
 ├── CONTRIBUTION.md
 ├── requirements.txt
+├── .github/workflows/notebook-check.yml
+├── scripts/check_notebooks.py
+├── tests/test_poster_validation_protocol.py
 ├── notebooks/
 │   ├── 01_ingredient_preprocessing.ipynb
 │   ├── 02_final_feature_engineering.ipynb
@@ -251,7 +264,8 @@ Risk Recall      : 63.1%
 ├── docs/
 │   ├── methodology.md
 │   ├── model-evaluation.md
-│   └── experiment-versions.md
+│   ├── experiment-versions.md
+│   └── validation-audit-20261108.md
 ├── data/
 │   └── README.md
 └── results/
@@ -260,7 +274,7 @@ Risk Recall      : 63.1%
 
 ---
 
-## 11. 학술 발표
+## 12. 학술 발표
 
 **2026 한국데이터마이닝학회 하계학술대회**  
 포스터 번호 **P1-62** · **제1저자**
@@ -271,7 +285,7 @@ Risk Recall      : 63.1%
 
 ---
 
-## 12. 적용 범위와 한계
+## 13. 적용 범위와 한계
 
 - 본 모델은 의료적 부작용을 진단하는 모델이 아닙니다.
 - 데이터는 크림 카테고리를 중심으로 구성되어 있습니다.
