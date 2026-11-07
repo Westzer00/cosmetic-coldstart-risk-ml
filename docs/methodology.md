@@ -31,7 +31,9 @@
 - Group overlap: 0
 - Train 내부 5-Fold Stratified Group CV
 - Threshold 선택은 Train OOF prediction만 사용
-- Test는 최종 평가에서만 사용
+- Test는 최종 모델 평가에서만 사용
+
+**제약:** 최종 실험은 300개 `GroupShuffleSplit` 후보 중 Train/Test 고위험 비율이 전체와 비슷한 분할을 선택했으며, 고위험군 라벨의 평활화/75% 기준도 전체 표본을 바탕으로 먼저 정했습니다. 그룹 중복 방지와 별개로, 엄격한 Train-only 타깃 기준 및 사전 고정 Hold-out에 대한 추가 민감도 분석이 필요합니다.
 
 ## 5. Model Selection
 
