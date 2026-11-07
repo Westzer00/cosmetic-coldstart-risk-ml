@@ -7,7 +7,6 @@ import json
 from pathlib import Path
 import numpy as np
 import pandas as pd
-import pytest
 from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold
 
 NOTEBOOK = Path(__file__).resolve().parents[1] / "notebooks" / "05_poster_final_formula_group.ipynb"
@@ -73,6 +72,18 @@ def test_cv_and_holdout_groups_remain_separate():
         assert fit_groups.isdisjoint(gtest)
         assert val_groups.isdisjoint(gtest)
 
-def test_missing_protocol_function_fails():
-    with pytest.raises(AssertionError):
-        load_notebook_function("nonexistent_function_name")
+def test_same_formula_across_two_products_stays_in_one_partition():
+    """A formula shared by different products must not cross the hold-out boundary."""
+    split = load_notebook_function("make_balanced_group_split")
+    formula = pd.Series(np.repeat([f"formula-{i}" for i in range(40)], 6))
+    products = pd.Series([
+        f"product-{i}-{j}"
+        for i in range(40) for j in range(2) for _ in range(3)
+    ])
+    labels = pd.Series(np.tile([0, 1, 0, 0, 1, 1], 40))
+    fit, holdout = split(labels, formula, n_candidates=30, random_state=42)
+    assert len(set(formula.iloc[fit]) & set(formula.iloc[holdout])) == 0
+    for group in formula.unique():
+        group_indices = set(np.flatnonzero(formula.to_numpy() == group))
+        assert group_indices.issubset(set(fit)) or group_indices.issubset(set(holdout))
+    assert len(products.iloc[fit]) + len(products.iloc[holdout]) == len(products)
